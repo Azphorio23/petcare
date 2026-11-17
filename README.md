@@ -2,7 +2,7 @@
 
 Aplicación web para gestionar las citas de una veterinaria. Los clientes reservan citas para sus mascotas y la recepción las confirma, marca como atendidas o cancela.
 
-Proyecto del curso **JavaScript Avanzado** (UTP).
+Proyecto del curso **JavaScript Avanzado**.
 
 ## Funcionalidades
 
