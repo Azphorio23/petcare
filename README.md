@@ -22,6 +22,54 @@ Proyecto del curso **JavaScript Avanzado** (UTP).
 - Node.js (API REST)
 - PostgreSQL
 
+## Temas del curso aplicados
+
+### Semana 11 · Introducción a React
+
+| Tema | Dónde |
+|---|---|
+| Proyecto con Vite (`npm run dev`, `npm run build`) | `package.json`, `vite.config.js` |
+| Punto de entrada y componente raíz | `src/main.jsx`, `src/App.jsx` |
+| JSX, `className` y expresiones `{}` | Todos los componentes |
+| Listas con `map()` y `key` | `ServiciosPage.jsx`, `TablaCitas.jsx` |
+| Contadores calculados con `filter().length` | `RecepcionPage.jsx`, `CitasPage.jsx` |
+| Bootstrap en React y clases según el estado | `main.jsx`, `EstadoBadge.jsx` |
+
+### Semana 12 · Componentes, navegación y formularios
+
+| Tema | Dónde |
+|---|---|
+| Componentes reutilizables y props | `ServicioCard.jsx`, `EstadoBadge.jsx`, `TablaCitas.jsx`, `EstadoCarga.jsx` |
+| `BrowserRouter`, `Routes` y `Route` | `main.jsx`, `App.jsx` |
+| `NavLink` con sección activa | `NavBar.jsx` |
+| Diseño común con `<Outlet />` | `Layout.jsx` |
+| Página 404 | `NotFoundPage.jsx` |
+| Parámetros de ruta y de consulta (`useParams`, `useSearchParams`) | `CitaDetallePage.jsx`, `ReservarPage.jsx` |
+| Formularios con `FormData`, `preventDefault` y validación HTML | `CitaForm.jsx`, `IngresarPage.jsx` |
+| Datos del hijo al padre mediante una prop | `CitaForm.jsx` → `ReservarPage.jsx` |
+
+### Semana 13 · Hooks
+
+| Tema | Dónde |
+|---|---|
+| `useState` (filtros, búsqueda, carga, errores) | `CitasPage.jsx` y demás páginas |
+| `createContext` y `useContext` | `TemaContext.jsx` (tema claro/oscuro), `AuthContext.jsx` (usuario y rol) |
+| `useRef` | `Buscador.jsx` (enfocar el buscador), `CitaForm.jsx` |
+| `use()` con `<Suspense>` y una Promise estable | `data/campana.js`, `CampanaPanel.jsx`, `InicioPage.jsx` |
+| `useEffect` con dependencias | Páginas que cargan datos, `TemaContext.jsx` |
+
+### Semana 14 · Servicios REST
+
+| Tema | Dónde |
+|---|---|
+| Servicios separados de los componentes | `src/services/` |
+| Fetch con GET, POST, PATCH y DELETE | `services/http.js`, `citaService.js`, `authService.js` |
+| JSON, `Content-Type` y revisión de `response.ok` | `services/http.js` |
+| Estados de carga, datos y error, con `finally` y Reintentar | `EstadoCarga.jsx` y la función `cargar()` de cada página |
+| Nueva consulta GET después de POST o PATCH | `CitasPage.jsx` |
+| API local y proxy de Vite | `server/api.mjs`, `vite.config.js` |
+| Cliente HTTP elegido: Fetch | Nativo del navegador, sin dependencias adicionales |
+
 ## Requisitos
 
 - Node.js 20.19 o superior
