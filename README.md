@@ -6,6 +6,7 @@ Proyecto del curso **JavaScript Avanzado** (UTP).
 
 ## Funcionalidades
 
+- Inicio de sesión con contraseña cifrada y registro de clientes.
 - Catálogo de servicios con filtro por categoría.
 - Reserva de citas con validación de datos y control de horarios ocupados.
 - **Cliente:** consulta y cancelación de sus propias citas.
@@ -60,6 +61,8 @@ Otros comandos:
 
 | Método | Ruta | Descripción |
 |---|---|---|
+| POST | `/api/login` | Inicio de sesión |
+| POST | `/api/registro` | Registro de un cliente |
 | GET | `/api/servicios` | Lista de servicios |
 | GET | `/api/citas` | Lista de citas (`?email=` filtra por cliente) |
 | GET | `/api/citas/:id` | Detalle de una cita |
@@ -81,7 +84,12 @@ src/
 
 ## Usuarios de prueba
 
-El ingreso no requiere contraseña:
+Se crean automáticamente la primera vez que se inicia la API:
 
-- **Cliente:** cualquier nombre con el correo `lucia@correo.com`
-- **Recepción:** cualquier nombre y correo, eligiendo el rol *Recepción*
+| Rol | Correo | Contraseña |
+|---|---|---|
+| Recepción | `recepcion@petcare.pe` | `recepcion123` |
+| Cliente | `lucia@correo.com` | `lucia123` |
+| Cliente | `ana@correo.com` | `ana123` |
+
+También se puede crear una cuenta de cliente desde **Ingresar → Crear cuenta**.

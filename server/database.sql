@@ -1,4 +1,3 @@
--- PetCare · esquema y datos iniciales (PostgreSQL)
 
 -- ---------- Tablas ----------
 CREATE TABLE IF NOT EXISTS servicios (
@@ -24,6 +23,15 @@ CREATE TABLE IF NOT EXISTS citas (
                CHECK (estado IN ('Pendiente', 'Confirmada', 'Atendida', 'Cancelada')),
   notas        TEXT         NOT NULL DEFAULT '',
   creado_en    TIMESTAMP    NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS usuarios (
+  id          SERIAL       PRIMARY KEY,
+  nombre      VARCHAR(80)  NOT NULL,
+  email       VARCHAR(120) NOT NULL UNIQUE,
+  rol         VARCHAR(10)  NOT NULL DEFAULT 'cliente' CHECK (rol IN ('cliente', 'recepcion')),
+  clave_hash  TEXT         NOT NULL,
+  creado_en   TIMESTAMP    NOT NULL DEFAULT NOW()
 );
 
 CREATE UNIQUE INDEX IF NOT EXISTS citas_horario_unico

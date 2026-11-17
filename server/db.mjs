@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import pg from 'pg';
+import { cifrarClave } from './seguridad.mjs';
 
 const archivoEnv = fileURLToPath(new URL('../.env', import.meta.url));
 if (fs.existsSync(archivoEnv)) process.loadEnvFile(archivoEnv);
@@ -44,10 +45,28 @@ async function crearBaseSiNoExiste() {
   }
 }
 
+export const USUARIOS_DEMO = [
+  { nombre: 'Recepción PetCare', email: 'recepcion@petcare.pe', rol: 'recepcion', clave: 'recepcion123' },
+  { nombre: 'Lucía Ramos', email: 'lucia@correo.com', rol: 'cliente', clave: 'lucia123' },
+  { nombre: 'Ana Torres', email: 'ana@correo.com', rol: 'cliente', clave: 'ana123' },
+];
+
+async function crearUsuariosDemo() {
+  const { rows } = await pool.query('SELECT COUNT(*)::int AS total FROM usuarios');
+  if (rows[0].total > 0) return;
+  for (const u of USUARIOS_DEMO) {
+    await pool.query(
+      'INSERT INTO usuarios (nombre, email, rol, clave_hash) VALUES ($1, $2, $3, $4)',
+      [u.nombre, u.email, u.rol, cifrarClave(u.clave)]
+    );
+  }
+}
+
 export async function prepararBaseDeDatos() {
   if (!enLaNube) await crearBaseSiNoExiste();
   const script = fs.readFileSync(new URL('./database.sql', import.meta.url), 'utf8');
   await pool.query(script);
+  await crearUsuariosDemo();
 }
 
 export function mensajeErrorConexion(error) {

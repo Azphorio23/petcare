@@ -1,5 +1,6 @@
 import http from 'node:http';
 import { pool, prepararBaseDeDatos, mensajeErrorConexion, nombreBase } from './db.mjs';
+import { cifrarClave, verificarClave } from './seguridad.mjs';
 
 const HOST = '127.0.0.1';
 const PORT = Number(process.env.PORT) || 3001;
@@ -11,6 +12,7 @@ const HORAS = new Set(['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12
 const COLUMNAS_CITA = `id, dueno, email, telefono, mascota, especie, servicio_id AS "servicioId",
                        fecha, hora, estado, notas`;
 const COLUMNAS_SERVICIO = `id, nombre, categoria, precio, duracion_min AS "duracionMin", descripcion`;
+const COLUMNAS_USUARIO = 'id, nombre, email, rol';
 
 function hoyISO() {
   const d = new Date();
@@ -81,6 +83,45 @@ async function manejar(req, res) {
   if (req.method === 'GET' && url.pathname === '/api/servicios') {
     const { rows } = await pool.query(`SELECT ${COLUMNAS_SERVICIO} FROM servicios ORDER BY id`);
     return responder(res, 200, rows);
+  }
+
+  if (req.method === 'POST' && url.pathname === '/api/login') {
+    let datos;
+    try { datos = await leerCuerpo(req); } catch (e) { return responder(res, 400, { error: e.message }); }
+    const email = texto(datos?.email).toLowerCase();
+    const clave = typeof datos?.clave === 'string' ? datos.clave : '';
+    if (!email || !clave) return responder(res, 400, { error: 'Escribe tu correo y tu contraseña.' });
+
+    const { rows } = await pool.query(`SELECT ${COLUMNAS_USUARIO}, clave_hash FROM usuarios WHERE email = $1`, [email]);
+    if (!rows.length || !verificarClave(clave, rows[0].clave_hash)) {
+      return responder(res, 401, { error: 'Correo o contraseña incorrectos.' });
+    }
+    const { clave_hash, ...usuario } = rows[0];
+    return responder(res, 200, usuario);
+  }
+
+  if (req.method === 'POST' && url.pathname === '/api/registro') {
+    let datos;
+    try { datos = await leerCuerpo(req); } catch (e) { return responder(res, 400, { error: e.message }); }
+    const nombre = texto(datos?.nombre);
+    const email = texto(datos?.email).toLowerCase();
+    const clave = typeof datos?.clave === 'string' ? datos.clave : '';
+    const errores = [];
+    if (nombre.length < 3) errores.push('El nombre debe tener al menos 3 caracteres.');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errores.push('El correo no es válido.');
+    if (clave.length < 6 || clave.length > 72) errores.push('La contraseña debe tener entre 6 y 72 caracteres.');
+    if (errores.length) return responder(res, 400, { error: errores.join(' ') });
+
+    try {
+      const { rows } = await pool.query(
+        `INSERT INTO usuarios (nombre, email, rol, clave_hash) VALUES ($1, $2, 'cliente', $3) RETURNING ${COLUMNAS_USUARIO}`,
+        [nombre, email, cifrarClave(clave)]
+      );
+      return responder(res, 201, rows[0]);
+    } catch (error) {
+      if (error.code === '23505') return responder(res, 409, { error: 'Ya existe una cuenta con ese correo.' });
+      throw error;
+    }
   }
 
   if (partes[0] === 'api' && partes[1] === 'citas') {

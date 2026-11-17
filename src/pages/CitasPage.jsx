@@ -64,7 +64,7 @@ export default function CitasPage() {
     return (
       <div className="pc-vacio py-5">
         <h1 className="h5 text-body mb-2">Ingresa para ver tus citas</h1>
-        <p className="mb-4">Identifícate como cliente (con tu correo) o como recepción.</p>
+        <p className="mb-4">Inicia sesión con tu correo y contraseña, o crea una cuenta nueva.</p>
         <Link className="btn pc-btn" to="/ingresar">Ingresar</Link>
       </div>
     );
