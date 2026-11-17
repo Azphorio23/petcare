@@ -870,27 +870,6 @@ a {
   background: var(--pc-verde-tinte);
 }
 
-.pc-demo {
-  border: 1.5px dashed var(--pc-borde);
-  border-radius: var(--pc-radio-sm);
-  padding: 1rem 1.1rem;
-  font-size: 0.85rem;
-}
-.pc-demo dl {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 0.35rem 1rem;
-}
-.pc-demo dt {
-  font-weight: 600;
-}
-.pc-demo dd {
-  margin: 0;
-}
-.pc-demo code {
-  color: var(--pc-verde-texto);
-}
-
 @media (max-width: 767.98px) {
   .pc-auth {
     grid-template-columns: 1fr;

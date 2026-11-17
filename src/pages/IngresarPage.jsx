@@ -125,18 +125,6 @@ export default function IngresarPage() {
             {enviando ? 'Verificando…' : esRegistro ? 'Crear cuenta' : 'Ingresar'}
           </button>
         </form>
-
-        {!esRegistro && (
-          <div className="pc-demo mt-4">
-            <p className="pc-etiqueta mb-2">Cuentas de prueba</p>
-            <dl className="mb-0">
-              <dt>Recepción</dt>
-              <dd><code>recepcion@petcare.pe</code> · <code>recepcion123</code></dd>
-              <dt>Cliente</dt>
-              <dd><code>lucia@correo.com</code> · <code>lucia123</code></dd>
-            </dl>
-          </div>
-        )}
       </div>
     </section>
   );
