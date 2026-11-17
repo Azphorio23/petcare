@@ -5,13 +5,18 @@ import pg from 'pg';
 const archivoEnv = fileURLToPath(new URL('../.env', import.meta.url));
 if (fs.existsSync(archivoEnv)) process.loadEnvFile(archivoEnv);
 
-const config = {
-  host: process.env.PGHOST || 'localhost',
-  port: Number(process.env.PGPORT) || 5432,
-  user: process.env.PGUSER || 'postgres',
-  password: process.env.PGPASSWORD || '',
-  database: process.env.PGDATABASE || 'petcare',
-};
+const urlNube = process.env.DATABASE_URL?.trim();
+export const enLaNube = Boolean(urlNube);
+
+const config = enLaNube
+  ? { connectionString: urlNube, ssl: { rejectUnauthorized: false } }
+  : {
+      host: process.env.PGHOST || 'localhost',
+      port: Number(process.env.PGPORT) || 5432,
+      user: process.env.PGUSER || 'postgres',
+      password: process.env.PGPASSWORD || '',
+      database: process.env.PGDATABASE || 'petcare',
+    };
 
 pg.types.setTypeParser(1082, (v) => v);
 pg.types.setTypeParser(1700, (v) => Number(v));
@@ -22,7 +27,7 @@ pool.on('error', (error) => {
   console.error('Conexión con PostgreSQL perdida:', mensajeErrorConexion(error));
 });
 
-export const nombreBase = config.database;
+export const nombreBase = enLaNube ? `${new URL(urlNube).hostname.split('.')[0]} (nube)` : config.database;
 
 async function crearBaseSiNoExiste() {
   const admin = new pg.Client({ ...config, database: 'postgres' });
@@ -40,12 +45,22 @@ async function crearBaseSiNoExiste() {
 }
 
 export async function prepararBaseDeDatos() {
-  await crearBaseSiNoExiste();
+  if (!enLaNube) await crearBaseSiNoExiste();
   const script = fs.readFileSync(new URL('./database.sql', import.meta.url), 'utf8');
   await pool.query(script);
 }
 
 export function mensajeErrorConexion(error) {
+  if (enLaNube) {
+    if (error.code === '28P01' || /password/i.test(error.message)) return 'Contraseña incorrecta en DATABASE_URL. Copia de nuevo la cadena de Supabase y reemplaza [YOUR-PASSWORD].';
+    if (error.code === 'ENOTFOUND' || error.code === 'ETIMEDOUT' || error.code === 'ENETUNREACH') return 'No se pudo llegar a la base en la nube. Revisa tu internet y que DATABASE_URL sea la del "Session pooler" de Supabase.';
+    return error.message;
+  }
+  if (!config.password) {
+    return fs.existsSync(archivoEnv)
+      ? 'El archivo .env no tiene contraseña. Escribe tu contraseña de PostgreSQL en la línea PGPASSWORD=.'
+      : 'Falta el archivo .env. Copia ".env.example", renombra la copia a ".env" y escribe tu contraseña de PostgreSQL en PGPASSWORD=.';
+  }
   switch (error.code) {
     case 'ECONNREFUSED':
       return `PostgreSQL no está corriendo en ${config.host}:${config.port}. Inícialo (Servicios de Windows o pgAdmin) y vuelve a intentar.`;

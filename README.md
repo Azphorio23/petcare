@@ -24,7 +24,7 @@ Proyecto del curso **JavaScript Avanzado** (UTP).
 ## Requisitos
 
 - Node.js 20.19 o superior
-- PostgreSQL en ejecución
+- PostgreSQL en ejecución, o un proyecto de Supabase
 
 ## Instalación
 
@@ -33,7 +33,10 @@ npm install
 cp .env.example .env    # en Windows: copy .env.example .env
 ```
 
-Editar `.env` con los datos de conexión a PostgreSQL (al menos `PGPASSWORD`).
+Editar `.env` con una de estas opciones:
+
+- **PostgreSQL local:** completar `PGPASSWORD` (y el resto de variables `PG*` si cambian).
+- **Base en la nube (Supabase):** activar `DATABASE_URL` con la cadena del *Session pooler* (Supabase → **Connect**). No requiere instalar PostgreSQL y todos los integrantes comparten los mismos datos.
 
 ## Ejecución
 
@@ -44,7 +47,7 @@ npm run api   # API en http://127.0.0.1:3001
 npm run dev   # App en http://127.0.0.1:5173
 ```
 
-Al iniciar, la API crea la base de datos `petcare`, sus tablas y datos de ejemplo si no existen.
+Al iniciar, la API crea las tablas y los datos de ejemplo si no existen (en modo local también crea la base `petcare`).
 
 Otros comandos:
 
