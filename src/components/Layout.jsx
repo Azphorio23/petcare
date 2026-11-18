@@ -1,7 +1,6 @@
 import { Link, Outlet } from 'react-router-dom';
 import NavBar from './NavBar.jsx';
 import logo from '../assets/logo.png';
-import { CLIENTE_ELEGIDO } from '../services/http.js';
 
 export default function Layout() {
   return (
@@ -13,7 +12,7 @@ export default function Layout() {
       <footer className="pc-pie pt-5 mt-5">
         <div className="container">
           <div className="row g-4 pb-4">
-            <div className="col-md-6">
+            <div className="col-md-8">
               <Link className="pc-marca mb-3" to="/">
                 <img src={logo} alt="" className="pc-logo" />
                 PetCare
@@ -22,20 +21,12 @@ export default function Layout() {
                 Veterinaria con citas en línea: consultas, vacunas y estética para perros, gatos y otras mascotas.
               </p>
             </div>
-            <div className="col-6 col-md-3">
+            <div className="col-6 col-md-4">
               <h3>Navegación</h3>
               <ul className="list-unstyled d-grid gap-2 mb-0">
                 <li><Link to="/servicios">Servicios</Link></li>
                 <li><Link to="/reservar">Reservar cita</Link></li>
                 <li><Link to="/citas">Mis citas</Link></li>
-              </ul>
-            </div>
-            <div className="col-6 col-md-3">
-              <h3>Proyecto</h3>
-              <ul className="list-unstyled d-grid gap-2 mb-0">
-                <li>JavaScript Avanzado (React)</li>
-                <li>Cliente HTTP: {CLIENTE_ELEGIDO}</li>
-                <li>API REST <code>/api</code></li>
               </ul>
             </div>
           </div>
